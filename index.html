@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Historia de Amor Mágica - San Valentín Interactivo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+        
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #ffecd2, #ffb6c1);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.8;
+            transition: all 1s ease;
+        }
+
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        .container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            z-index: 1;
+        }
+
+        h1, h2 {
+            font-family: 'Dancing Script', cursive;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.5s ease;
+        }
+
+        h1 { font-size: 4em; }
+        h2 { font-size: 2.5em; }
+
+        .message {
+            font-size: 1.5em;
+            color: #ffffff;
+            margin: 20px 0;
+            transition: all 0.5s ease;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 1.2em;
+            color: #ffffff;
+            background-color: rgba(255, 77, 77, 0.8);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .button:hover {
+            background-color: rgba(255, 51, 51, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        #storyContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #storyContent {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+            text-align: left;
+            position: relative;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        #audioControl {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 2em;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        #audioControl:hover {
+            transform: scale(1.1);
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23ff4d4d" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>') no-repeat center center;
+            background-size: contain;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #finalQuestion, #loveQuote {
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.5s ease;
+        }
+
+        #celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(30);
+                opacity: 0;
+            }
+        }
+
+        #gallery {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        #galleryContent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #galleryImage {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3em;
+            color: white;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-nav:hover {
+            color: #ff4d4d;
+        }
+
+        #prevImage { left: 20px; }
+        #nextImage { right: 20px; }
+
+        #closeGallery {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2em;
+            color: white;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        #memoryGame {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow: auto;
+        }
+
+        #memoryGameContent {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            margin: 5px;
+            background-color: #ff4d4d;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .memory-card.flipped {
+            background-color: white;
+            font-size: 2em;
+        }
+
+        #closeMemoryGame {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2em;
+            color: white;
+            cursor: pointer;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container" id="mainContainer">
+        <h1>Nuestra Historia de Amor Mágica</h1>
+        <p class="message">Haz clic para comenzar nuestro viaje juntos</p>
+        <button class="button" onclick="startStory()">Iniciar</button>
+    </div>
+
+    <div id="storyContainer">
+        <div id="storyContent">
+            <span class="close-btn" onclick="closeStory()">&times;</span>
+            <h2 id="storyTitle"></h2>
+            <p id="storyText"></p>
+            <button class="button" id="nextBtn" onclick="nextStory()">Siguiente</button>
+        </div>
+    </div>
+
+    <div class="container" id="finalContainer" style="display: none;">
+        <p id="loveQuote"></p>
+        <h2 id="finalQuestion"></h2>
+        <button id="yesBtn" class="button" onclick="acceptLove()">Sí, ¡acepto!</button>
+        <button id="noBtn" class="button" onclick="rejectLove()">Necesito pensarlo</button>
+    </div>
+
+    <div id="celebration"></div>
+
+    <div id="gallery">
+        <div id="galleryContent">
+            <img id="galleryImage" src="/placeholder.svg" alt="Recuerdo especial">
+        </div>
+        <div id="prevImage" class="gallery-nav" onclick="changeImage(-1)">&#10094;</div>
+        <div id="nextImage" class="gallery-nav" onclick="changeImage(1)">&#10095;</div>
+        <div id="closeGallery" onclick="closeGallery()">&times;</div>
+    </div>
+
+    <div id="memoryGame">
+        <div id="memoryGameContent"></div>
+        <div id="closeMemoryGame" onclick="closeMemoryGame()">&times;</div>
+    </div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="Bad Bunny (ft. Bomba Estéreo) - Ojitos Lindos (360 Visualizer)  Un Verano Sin Ti.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+    <button id="audioControl" onclick="toggleMusic()">🎵</button>
+
+    <script>
+        const story = [
+            { 
+                title: "El día que nos conocimos", 
+                text: "Recuerdo como si fuera ayer el momento en que nuestras miradas se cruzaron por primera vez. El mundo pareció detenerse y supe que algo especial estaba comenzando. Tu sonrisa iluminó la habitación y mi corazón dio un vuelco. Desde ese instante, supe que mi vida cambiaría para siempre.",
+                action: () => {}
+            },
+            { 
+                title: "Nuestra primera cita", 
+                text: "Estaba tan nervioso/a, pero tu sonrisa me hizo sentir en casa. Compartimos risas, historias y ese primer roce de manos que hizo que mi corazón saltara. El tiempo voló mientras hablábamos, y cuando llegó el momento de despedirnos, ya estaba ansiando volver a verte.",
+                action: () => {}
+            },
+            { 
+                title: "El primer 'Te amo'", 
+                text: "Las palabras salieron de mi corazón antes de que pudiera pensarlas. En ese momento, viendo tus ojos brillar, supe que eras la persona con la que quería compartir mi vida. Tu respuesta, un suave 'Yo también te amo', hizo que mi corazón se llenara de una felicidad indescriptible.",
+                action: () => {}
+            },
+            { 
+                title: "Nuestros desafíos", 
+                text: "Juntos hemos superado cada obstáculo, haciéndonos más fuertes. Cada prueba nos ha unido más, demostrando que nuestro amor puede superar cualquier adversidad. Hemos aprendido a comunicarnos, a apoyarnos mutuamente y a crecer juntos. Cada desafío superado es un testimonio de la fuerza de nuestro amor.",
+                action: () => {}
+            },
+            { 
+                title: "Nuestros momentos especiales", 
+                text: "A lo largo de nuestro viaje juntos, hemos creado recuerdos inolvidables. Desde viajes emocionantes hasta tranquilas noches en casa, cada momento contigo es especial. Estos son algunos de nuestros recuerdos más preciados...",
+                action: showGallery
+            },
+            { 
+                title: "Nuestro juego del amor", 
+                text: "El amor es como un juego en el que ambos ganamos. ¿Qué te parece si jugamos un pequeño juego para recordar algunos de nuestros momentos más especiales?",
+                action: showMemoryGame
+            },
+            { 
+                title: "Nuestros sueños", 
+                text: "Contigo, veo un futuro lleno de amor, risas y aventuras. Cada día a tu lado es una nueva oportunidad para crear recuerdos maravillosos y construir nuestra felicidad juntos. Sueño con envejecer a tu lado, compartiendo alegrías, superando desafíos y amándonos más cada día.",
+                action: () => {}
+            }
+        ];
+
+        const images = [
+            '5cec87d9-7b9d-4739-8e5c-2427da1d4930.jpg',
+            '7422b9a1-81b4-47b9-ad78-35b33e384844_1.jpg',
+            'b8e29336-857d-4aba-a078-aacdd1ddb686_1.jpg',
+            'b88c3c21-19f5-4cc7-91ff-31e3dbc56d7c_1.jpg',
+            'e881de08-3b96-4b8a-81ee-ff539a84dc59_1.jpg'
+        ];
+
+        const memoryItems = ['❤️', '🌹', '💍', '🎵', '🌈', '🍓', '🌺', '🎁'];
+
+        let currentStory = 0;
+        let currentImage = 0;
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function startStory() {
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('storyContainer').style.display = 'flex';
+            updateStory();
+            playBackgroundMusic();
+        }
+
+        function updateStory() {
+            const content = document.getElementById('storyContent');
+            content.style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('storyTitle').textContent = story[currentStory].title;
+                document.getElementById('storyText').textContent = story[currentStory].text;
+                content.style.opacity = '1';
+            }, 500);
+        }
+
+        function nextStory() {
+            currentStory++;
+            if (currentStory < story.length) {
+                updateStory();
+                story[currentStory].action();
+            } else {
+                closeStory();
+                showFinalQuestion();
+            }
+        }
+
+        function closeStory() {
+            document.getElementById('storyContainer').style.display = 'none';
+        }
+
+        function showFinalQuestion() {
+            document.getElementById('finalContainer').style.display = 'flex';
+            document.getElementById('loveQuote').textContent = '"El amor no se mira, se siente, y aún más cuando ella está junto a ti." - Pablo Neruda';
+            document.getElementById('finalQuestion').textContent = '¿Quieres ser mi San Valentín hoy y siempre?';
+        }
+
+        function acceptLove() {
+            document.getElementById('noBtn').style.display = 'none';
+            document.getElementById('yesBtn').disabled = true;
+            document.getElementById('finalQuestion').textContent = '¡Te amo con todo mi corazón!';
+            document.getElementById('loveQuote').textContent = 'Gracias por ser mi amor eterno. ❤️';
+            celebrateLove();
+        }
+
+        function rejectLove() {
+            const btn = document.getElementById('noBtn');
+            const container = document.getElementById('finalContainer');
+            const maxX = container.clientWidth - btn.clientWidth;
+            const maxY = container.clientHeight - btn.clientHeight;
+            btn.style.position = 'absolute';
+            btn.style.left = Math.random() * maxX + 'px';
+            btn.style.top = Math.random() * maxY + 'px';
+        }
+
+        function celebrateLove() {
+            document.querySelector('.background').style.backgroundImage = 'linear-gradient(45deg, #ff0000, #ff69b4, #ff1493, #ff00ff)';
+            for (let i = 0; i < 50; i++) {
+                createHeart();
+                createFirework();
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = Math.random() * 100 + 'vh';
+            document.body.appendChild(heart);
+            setTimeout(() => {
+                heart.style.opacity = '1';
+                setTimeout(() => {
+                    heart.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(heart);
+                    }, 500);
+                }, 2000);
+            }, 50);
+        }
+
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+            firework.style.left = Math.random() * 100 + 'vw';
+            firework.style.top = Math.random() * 100 + 'vh';
+            firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            document.getElementById('celebration').appendChild(firework);
+            setTimeout(() => {
+                document.getElementById('celebration').removeChild(firework);
+            }, 1000);
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('backgroundMusic');
+            const control = document.getElementById('audioControl');
+            if (music.paused) {
+                music.play();
+                control.textContent = '🔇';
+            } else {
+                music.pause();
+                control.textContent = '🎵';
+            }
+        }
+
+        function playBackgroundMusic() {
+            const music = document.getElementById('backgroundMusic');
+            music.play();
+            document.getElementById('audioControl').textContent = '🔇';
+        }
+
+        function showGallery() {
+            document.getElementById('gallery').style.display = 'block';
+            showImage(currentImage);
+        }
+
+        function closeGallery() {
+            document.getElementById('gallery').style.display = 'none';
+        }
+
+        function showImage(index) {
+            const img = document.getElementById('galleryImage');
+            img.style.opacity = 0;
+            setTimeout(() => {
+                img.src = images[index];
+                img.style.opacity = 1;
+            }, 500);
+        }
+
+        function changeImage(direction) {
+            currentImage = (currentImage + direction + images.length) % images.length;
+            showImage(currentImage);
+        }
+
+        function showMemoryGame() {
+            document.getElementById('memoryGame').style.display = 'block';
+            initializeMemoryGame();
+        }
+
+        function closeMemoryGame() {
+            document.getElementById('memoryGame').style.display = 'none';
+        }
+
+        function initializeMemoryGame() {
+            const gameContent = document.getElementById('memoryGameContent');
+            gameContent.innerHTML = '';
+            const shuffledItems = [...memoryItems, ...memoryItems].sort(() => Math.random() - 0.5);
+            shuffledItems.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.value = item;
+                card.dataset.index = index;
+                card.addEventListener('click', flipCard);
+                gameContent.appendChild(card);
+            });
+            flippedCards = [];
+            matchedPairs = 0;
+        }
+
+        function flipCard() {
+            if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+                this.classList.add('flipped');
+                this.textContent = this.dataset.value;
+                flippedCards.push(this);
+                if (flippedCards.length === 2) {
+                    setTimeout(checkMatch, 1000);
+                }
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.value === card2.dataset.value) {
+                matchedPairs++;
+                if (matchedPairs === memoryItems.length) {
+                    alert('¡Felicidades! Has encontrado todos los pares. ¡Nuestro amor es perfecto!');
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '';
+                card2.textContent = '';
+            }
+            flippedCards = [];
+        }
+
+        document.body.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.9) {
+                createHeart();
+            }
+        });
+    </script>
+</body>
+</html>
